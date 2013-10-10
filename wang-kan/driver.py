@@ -19,8 +19,9 @@ def main():
     """
     import lda
 
-    docs = 1                    # TODO: stub
-    v = 1                       # TODO: stub
+    docs = [[1,2,3],[2,3,4],[1,2,4],[5,2,3],[1,4,5],  \
+            [5,6,7],[8,9,10],[5,7,10],[10,9,8],[7,8,10]]
+    v = 10                      # 10 vocabulary items
 
     lda = lda.LDA(docs,v)
     print ("hello")
