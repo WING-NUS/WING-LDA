@@ -9,8 +9,10 @@ class LdaGibbsSampler:
         V: int, the size of the vocabulary
         K: int, # of topics
         iteration: int; maximum number of iterations of Gibbs sampling
+
         alpha: float. document--topic associations
         beta: float. topic--term associations
+
         int topic_assign[M][N]: topic assignment for each word
         int doc_topic[M][K]: number of words in document i assigned to topic j.
         int word_topic[V][K]: number of instances of word i (term?) assigned to topic j.
@@ -54,6 +56,8 @@ class LdaGibbsSampler:
             K: int. # of topics
             alpha: float. symmetric prior parameter on document--topic associations
             beta: symmetric prior parameter on topic--term associations
+
+        Refer to pseudo code in figure 9
         """
         self.K = K
         self.alpha = alpha
@@ -77,8 +81,29 @@ class LdaGibbsSampler:
         """
         print "initialize_state"
     #end of initialize_state
-    
-    
+ 
+    def sample_full_conditional(m, n)
+        """calculate the full conditional distribution for a word token with index i=(m,n)
+
+        Args:
+            m: m(th) document
+            n: n(th) word
+
+        Refer to formula (78) in paper
+        """
+    #end of sample_full_conditional
+
+    def get_theta   
+        """calculated theta based on document_topic and alpha
+        refer to formula (82)
+        """
+    #end of get_theta
+
+    def get_phi
+        """calculated phi based on word_topic and beta
+        refer to formula (81)
+        """        
+    #end of get_phi
 
     
 
