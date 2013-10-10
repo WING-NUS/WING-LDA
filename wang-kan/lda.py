@@ -32,6 +32,7 @@ class LDA:
         self.K = 10             # number of topics
         self.alpha = 0.01    # topic prior (used to influence \Theta) 
         self.beta = 0.01        # word prior (used to influence \Phi)
+        
         # end of method __init 
 
 # end of class LDA

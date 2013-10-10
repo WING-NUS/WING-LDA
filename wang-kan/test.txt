@@ -1,131 +1,131 @@
-jovian muthu lobo min yipping
+5 7 10 3 2
 
-tao dongyuan zhaoyan
+1 9 6
 
-jovian dongyuan tao
+5 9 1
 
-min aobo  dongyuan
+3 4 9
 
-jovian yipping aobo
+5 2 4
 
-dongyuan tao
+9 1
 
-min yiping
+3 8
 
-jovian muthu
+5 7
 
-jovian junping
+5 11
 
-dongyuan zhaoyan
+9 6
 
-aobo muthu
+4 7
 
-jovian muthu lobo min yipping
+5 7 10 3 2
 
-tao dongyuan zhaoyan
+1 9 6
 
-jovian dongyuan tao
+5 9 1
 
-min aobo  dongyuan
+3 4 9
 
-jovian yipping aobo
+5 2 4
 
-dongyuan tao
+9 1
 
-min yiping
+3 8
 
-jovian muthu
+5 7
 
-jovian junping
+5 11
 
-dongyuan zhaoyan
+9 6
 
-aobo muthu
+4 7
 
-jovian muthu lobo min yipping
+5 7 10 3 2
 
-tao dongyuan zhaoyan
+1 9 6
 
-jovian dongyuan tao
+5 9 1
 
-min aobo  dongyuan
+3 4 9
 
-jovian yipping aobo
+5 2 4
 
-dongyuan tao
+9 1
 
-min yiping
+3 8
 
-jovian muthu
+5 7
 
-jovian junping
+5 11
 
-dongyuan zhaoyan
+9 6
 
-aobo muthu
+4 7
 
-jovian muthu lobo min yipping
+5 7 10 3 2
 
-tao dongyuan zhaoyan
+1 9 6
 
-jovian dongyuan tao
+5 9 1
 
-min aobo  dongyuan
+3 4 9
 
-jovian yipping aobo
+5 2 4
 
-dongyuan tao
+9 1
 
-min yiping
+3 8
 
-jovian muthu
+5 7
 
-jovian junping
+5 11
 
-dongyuan zhaoyan
+9 6
 
-aobo muthu
+4 7
 
-jovian muthu lobo min yipping
+5 7 10 3 2
 
-tao dongyuan zhaoyan
+1 9 6
 
-jovian dongyuan tao
+5 9 1
 
-min aobo  dongyuan
+3 4 9
 
-jovian yipping aobo
+5 2 4
 
-dongyuan tao
+9 1
 
-min yiping
+3 8
 
-jovian muthu
+5 7
 
-jovian junping
+5 11
 
-dongyuan zhaoyan
+9 6
 
-aobo muthu
+4 7
 
-jovian muthu lobo min yipping
+5 7 10 3 2
 
-tao dongyuan zhaoyan
+1 9 6
 
-jovian dongyuan tao
+5 9 1
 
-min aobo  dongyuan
+3 4 9
 
-jovian yipping aobo
+5 2 4
 
-dongyuan tao
+9 1
 
-min yiping
+3 8
 
-jovian muthu
+5 7
 
-jovian junping
+5 11
 
-dongyuan zhaoyan
+9 6
 
-aobo muthu
+4 7
