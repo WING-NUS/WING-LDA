@@ -43,7 +43,7 @@ class LdaGibbsSampler:
         self.iteration = iteration
     #end of configure
 
-    def gibbs_sampling(self, K, alpha, beta):
+    def inference_gibbs_sampling(self, K, alpha, beta):
         """Performs Gibbs Sampling 
            
            Select initial state ? Repeat a large number of times: 
@@ -60,9 +60,9 @@ class LdaGibbsSampler:
         self.beta = beta
 
         #initialize the state of the Markov chain
-        initialize_state()
+        self.initialize_state()
 
-        for i in range(iteration):
+        for i in range(self.iteration):
             for m in range(len(z)):  #for each document
                 for n in range(len(z[m])):  #for each word
                     #perform full conditional inference
@@ -77,6 +77,8 @@ class LdaGibbsSampler:
         """
         print "initialize_state"
     #end of initialize_state
+    
+    
 
     
 
