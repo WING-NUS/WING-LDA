@@ -36,25 +36,24 @@ class LDA:
     """
     
     def __init__(self, docs, V):
-        """
-        Initialization
-        """
         self.K = 2             # number of topics
         self.alpha = 0.01    # topic prior (used to influence \Theta) 
         self.beta = 0.01        # word prior (used to influence \Phi)
         self.seed = 1
 
+        # zero all count variables, n_m_k n_m, n_k_t, n_k
+
         numpy.random.seed(self.seed)
 
-        # zero all count variables, n_m_k n_m, n_k_t, n_k
-        # for all documents m \in [1,M] do
-        for m, doc in enumerate(docs):
-            print (m)
-            # for all words n \in [1,n_m] in doc_m do
+        for m, doc in enumerate(docs): 
+            # for all documents m \in [1,M] do
+            print ("Doc", m)
             for n, word in enumerate(doc):
-                z = numpy.random.randint(0, self.K)
-                print ("  ", n, ":", word, "; topic=", z)
+                # for all words n \in [1,n_m] in doc_m do
                 # TODO: Smart Init: sample topic index z_m_n = K from Multinomial(1/K)
+                z = numpy.random.randint(0, self.K) # choose a topic for each word
+
+                print ("  Word", n, ":", word, "; assigned to topic=", z)
 
                 # increment document-topic count n_m_k += 1
                 # increment document-topic sum n_m += 1

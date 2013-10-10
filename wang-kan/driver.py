@@ -25,7 +25,6 @@ def main():
     v = 10                      # 10 vocabulary items
 
     lda = lda.LDA(docs,v)
-    print ("hello")
 # end main()
 
 # execute class if called from command-line
