@@ -41,8 +41,15 @@ class LDA:
         self.beta = 0.01        # word prior (used to influence \Phi)
         self.seed = 1
 
-        # zero all count variables, n_m_k n_m, n_k_t, n_k
+        # topic assignments for words in documents
+        self.z_m_n = list()     # to be populated by inner loop
 
+        # zero all count variables: n_m_k, n_m, n_k_t, n_k
+        # self.n_m_k = numpy.zeros((M,K)) # document-topic count n_m_k (dim MxK)
+        # document-topic sum n_m (dim M)
+        # topic-term count n_k_t (dim KxV)
+        # topic-term sum n_k (dim K)
+        
         numpy.random.seed(self.seed)
 
         for m, doc in enumerate(docs): 
@@ -58,7 +65,7 @@ class LDA:
                 # increment document-topic count n_m_k += 1
                 # increment document-topic sum n_m += 1
                 # increment topic-term count n_k_t += 1
-                # increment topic-term count n_k += 1
+                # increment topic-term sum n_k += 1
             # end for all words n
         # end for all documents m
         # end of method __init 
