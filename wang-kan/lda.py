@@ -39,17 +39,20 @@ class LDA:
         self.K = 2             # number of topics
         self.alpha = 0.01    # topic prior (used to influence \Theta) 
         self.beta = 0.01        # word prior (used to influence \Phi)
+        self.docs = docs
         self.seed = 1
 
         # topic assignments for words in documents
         self.z_m_n = list()     # to be populated by inner loop
-
-        # zero all count variables: n_m_k, n_m, n_k_t, n_k
-        # self.n_m_k = numpy.zeros((M,K)) # document-topic count n_m_k (dim MxK)
-        # document-topic sum n_m (dim M)
-        # topic-term count n_k_t (dim KxV)
-        # topic-term sum n_k (dim K)
         
+        # zero all count variables: sum_m_k, sum_m, sum_k_t, sum_k
+        self.sum_m_k = numpy.zeros((len(docs),self.K)) # document-topic count sum_m_k (dim MxK)
+        self.sum_m   = numpy.zeros(len(docs))# document-topic sum sum_m (dim M)
+        self.sum_k_t = numpy.zeros((self.K,V))# topic-term count sum_k_t (dim KxV)
+        self.sum_k   = numpy.zeros(self.K)# topic-term sum sum_k (dim K)
+        # todo: use the hyperparameters!  
+        self.word_count = 0
+
         numpy.random.seed(self.seed)
 
         for m, doc in enumerate(docs): 
@@ -61,7 +64,6 @@ class LDA:
                 z = numpy.random.randint(0, self.K) # choose a topic for each word
 
                 print ("  Word", n, ":", word, "; assigned to topic=", z)
-
                 # increment document-topic count n_m_k += 1
                 # increment document-topic sum n_m += 1
                 # increment topic-term count n_k_t += 1
