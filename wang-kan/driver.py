@@ -20,11 +20,12 @@ def main():
     import lda
 
     docs = [[1,2,3],[2,3,4],[1,2,4],[5,2,3],[1,4,5],  \
-            [5,6,7],[8,9,10],[5,7,10],[10,9,8],[7,8,10]]
+            [5,6,7],[8,9,0],[5,7,0],[0,9,8],[7,8,0]]
     
     v = 10                      # 10 vocabulary items
 
     lda = lda.LDA(docs,v)
+    lda.inference()
 # end main()
 
 # execute class if called from command-line
