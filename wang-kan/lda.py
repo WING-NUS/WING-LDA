@@ -46,30 +46,46 @@ class LDA:
         self.z_m_n = list()     # to be populated by inner loop
         
         # zero all count variables: sum_m_k, sum_m, sum_k_t, sum_k
-        self.sum_m_k = numpy.zeros((len(docs),self.K)) # document-topic count sum_m_k (dim MxK)
-        self.sum_m   = numpy.zeros(len(docs))# document-topic sum sum_m (dim M)
-        self.sum_k_t = numpy.zeros((self.K,V))# topic-term count sum_k_t (dim KxV)
-        self.sum_k   = numpy.zeros(self.K)# topic-term sum sum_k (dim K)
-        # todo: use the hyperparameters!  
+        self.sum_m_z = numpy.zeros((len(docs),self.K)) # document-topic count sum_m_k (dim MxK)
+        self.sum_m   = numpy.zeros(len(docs)) # document-topic sum sum_m (dim M)
+        self.sum_z_t = numpy.zeros((self.K,V)) # topic-term count sum_z_t (dim KxV)
+        self.sum_z   = numpy.zeros(self.K) # topic-term sum sum_z (dim K)
         self.word_count = 0
+        # TODO: use the hyperparameters
 
+        # set the random seed for replicability
         numpy.random.seed(self.seed)
 
         for m, doc in enumerate(docs): 
             # for all documents m \in [1,M] do
             print ("Doc", m)
+            z_n = numpy.zeros(len(doc)) # (empty) topic assignments for doc m
             for n, word in enumerate(doc):
                 # for all words n \in [1,n_m] in doc_m do
                 # TODO: Smart Init: sample topic index z_m_n = K from Multinomial(1/K)
                 z = numpy.random.randint(0, self.K) # choose a topic for each word
+                z_n[n] = z
 
                 print ("  Word", n, ":", word, "; assigned to topic=", z)
-                # increment document-topic count n_m_k += 1
-                # increment document-topic sum n_m += 1
-                # increment topic-term count n_k_t += 1
-                # increment topic-term sum n_k += 1
+                # increment document-topic count sum_m_z += 1
+                self.sum_m_z[m,z] += 1
+                # increment document-topic sum sum_m += 1
+                self.sum_m[m] += 1
+                # increment topic-term count sum_z_t += 1
+                self.sum_z_t[z,word] += 1
+                # increment topic-term sum sum_z += 1
+                self.sum_z[z] += 1
             # end for all words n
+            self.word_count += len(doc)
+            self.z_m_n.append(z_n)
         # end for all documents m
+
+        # TODO:to be deleted later
+        print ("Corpus has length ", self.word_count)
+        for i in range(self.K):
+            print ("Topic", i, self.sum_z[i])
+        for i in range(len(self.docs)):
+            print ("Doc", i, self.sum_m[i], self.sum_m_z[i])
         # end of method __init 
 
     def inference():
