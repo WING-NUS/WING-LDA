@@ -41,31 +41,34 @@ class LDA:
         self.K = 2             # number of topics
         self.alpha = 0.01    # should have been a vector
         self.beta = 0.01        # should have been a vector
-        self.seed = 1
         self.docs = docs
         self.M = len(self.docs)
 
-        # topic assignments for words in documents
+        # Topics of words of documents.
         self.z_m_n = list()
+        # Word count of each document and topic.
         self.n_m_k = numpy.zeros(self.M, self.K)
+        # Word count of each document
         self.n_m = numpy.zeros(self.M)
+        # Word count of each topic and vocabulary.
         self.n_k_t = numpy.zeros((self.K, V))
+        # Word count of each topic.
         self.n_k = numpy.zeros(self.K)
 
-        numpy.random.seed(self.seed)
-
         for m, doc in enumerate(docs):
+            # Word count for the current document
+            self.n_m[m] = len(doc)
+            # Sampling a Multinomial Distribution for the current document
+            doc_topic_dist = numpy.random.Dirichlet([self.alpha] * self.K)
             z_n = numpy.zeros(len(doc))
             for n, word in enumerate(doc):
-                # Smart Init sample topic index z_m_n = K from Multinomial(1/K)
-                z = numpy.random.randint(0, self.K)
+                # Sampling a topic from the sampled Multinomial Distribution
+                z = numpy.random.multinomial(1, doc_topic_dist).argmax()
                 z_n[n] = z
                 # increment document-topic count sum_m_z += 1
                 self.n_m_k[m, z] += 1
-                # increment document-topic sum sum_m += 1
-                self.n_m[m] += 1
                 # increment topic-term count sum_z_t += 1
-                self.n_k_t[z, n] += 1
+                self.n_k_t[z, word] += 1
                 # increment topic-term sum sum_z += 1
                 self.n_k[z] += 1
             self.z_m_n.append(z_n)
@@ -79,15 +82,29 @@ class LDA:
         (e.g., perplexity)
         """
 
-        for m in range(10):
-            for n in range(3):
+        for m, doc in enumerate(self.docs):
+            for n, t in enumerate(doc):
+                # Topic assigned to the current word
                 zmn = self.z_m_n[m, n]
+                # Decrement count from the document-topic matrix
                 self.n_m_k[m, zmn] -= 1
-                self.n_m[m] -= 1
+                # Decrement count for the topic vocab matrix
+                self.n_k_t[zmn, t] -= 1
+                # Decrement count for topic vector
                 self.n_k[zmn] -= 1
-            # end for all words
-        # end for all documents
-        # end of method inference
+                #self.n_m[m] -= 1
+                # Calculating the probability ratios without the current word
+                p_z = (self.n_k_t[:, t] + self.beta) * (self.n_m_k[m] +
+                                                        self.alpha) / \
+                      (self.n_k + self.beta)
+                # Feeding these probabilities to the multinomial and sampling a
+                # new topic (the prob. values are normalized as well)
+                new_z = numpy.random.multinominal(1, p_z / p_z.sum()).argmax()
+                # Updating all the variables
+                self.z_m_n[m, n] = new_z
+                self.n_m_k[m, new_z] += 1
+                self.n_k_t[new_z, t] += 1
+                self.n_k[new_z] += 1
 
     def perplexity(self):
         1                       # placeholder
