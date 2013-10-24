@@ -39,8 +39,8 @@ class LDA:
 
     def __init__(self, docs, V):
         self.K = 2             # number of topics
-        self.alpha = 0.01    # topic prior (used to influence \Theta)
-        self.beta = 0.01        # word prior (used to influence \Phi)
+        self.alpha = 0.01    # should have been a vector
+        self.beta = 0.01        # should have been a vector
         self.seed = 1
         self.docs = docs
         self.M = len(self.docs)
@@ -52,26 +52,25 @@ class LDA:
         self.n_k_t = numpy.zeros((self.K, V))
         self.n_k = numpy.zeros(self.K)
 
-        self.N = 0
-
         numpy.random.seed(self.seed)
 
         for m, doc in enumerate(docs):
+            z_n = numpy.zeros(len(doc))
             for n, word in enumerate(doc):
-                # TODO: Smart Init: sample topic index z_m_n = K from Multinomial(1/K)
-                z = numpy.random.randint(0, self.K) # choose a topic for each word
+                # Smart Init sample topic index z_m_n = K from Multinomial(1/K)
+                z = numpy.random.randint(0, self.K)
+                z_n[n] = z
+                # increment document-topic count sum_m_z += 1
+                self.n_m_k[m, z] += 1
+                # increment document-topic sum sum_m += 1
+                self.n_m[m] += 1
+                # increment topic-term count sum_z_t += 1
+                self.n_k_t[z, n] += 1
+                # increment topic-term sum sum_z += 1
+                self.n_k[z] += 1
+            self.z_m_n.append(z_n)
 
-                print ("  Word", n, ":", word, "; assigned to topic=", z)
-
-                # increment document-topic count n_m_k += 1
-                # increment document-topic sum n_m += 1
-                # increment topic-term count n_k_t += 1
-                # increment topic-term sum n_k += 1
-            # end for all words n
-        # end for all documents m
-        # end of method __init
-
-    def inference():
+    def inference(self):
         """
         Gibbs Sampling over burn-in period and sampling period
 
@@ -80,29 +79,17 @@ class LDA:
         (e.g., perplexity)
         """
 
-        # for all documents m \in [1,M] do
         for m in range(10):
-            # for all words n \in [1,N_m] in document m do
             for n in range(3):
-                # // for the current assignment of k to a term t for word w_m_n
-                # decrement counts and sums:
-                n_m_k -= 1
-                n_m -= 1
-                n_k_t -= 1
-                n_k -= 1
-                # // multinomial sampling acc. to Eq. 78 (decrements from previous step):
-                # sample topic index k from p (z_i|z_not_i, w)
-                # // for the new assignment of z_m_n to the term t for word w_m_n:
-                # increment counts and sums:
-                n_m_k += 1
-                n_m += 1
-                n_k_t += 1
-                n_k += 1
+                zmn = self.z_m_n[m, n]
+                self.n_m_k[m, zmn] -= 1
+                self.n_m[m] -= 1
+                self.n_k[zmn] -= 1
             # end for all words
         # end for all documents
         # end of method inference
 
-    def perplexity():
+    def perplexity(self):
         1                       # placeholder
         # end of method perplexity
 
