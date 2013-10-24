@@ -32,6 +32,7 @@ class LdaGibbsSampler:
         """
         self.documents = documents
         self.V = V
+A
     #end of __init__ 
 
     def configure(self, iteration):
@@ -44,64 +45,70 @@ class LdaGibbsSampler:
         self.iteration = iteration
     #end of configure
 
-    def inference_gibbs_sampling(self, K, alpha, beta):
+    def inference_gibbs_sampling(self, alpha, beta):
         """Performs Gibbs Sampling 
            
            Select initial state ? Repeat a large number of times: 
                1. Select an element 
                2. Update conditional on other elements. 
         
-        Args:
+        elf.documents)rgs:
             K: int. # of topics
             alpha: float. symmetric prior parameter on document--topic associations
             beta: symmetric prior parameter on topic--term associations
 
         Refer to pseudo code in figure 9
         """
-        self.K = K
-        self.alpha = [alpha] * K
-        self.beta = [beta] * V
-
+        #self.alpha = [alpha] * K
+        #self.beta = [beta] * V
+        #lines above disabled for idiot's version
+        self.alpha = alpha
+        self.beta = beta
         #initialize the state of the Markov chain
         self.initialize_state()
 
         for i in range(self.iteration):
-            for m in range(len(topic_assign)):  #for each document
-                for n in range(len(topic_assign[m])):  #for each word
+            for m in range(len(self.topic_assign)):  #for each document
+                for n in range(len(self.topic_assign[m])):  #for each word
                     #decrement counts and sums
-                    old_topic = topic_assign[m][n]
-                    count_doc_topic[m][old_topic] -= 1
-                    word_sum_topic[old_topic] -= 1
-                    count_term_topic[document[m][n]][old_topic] -= 1
+                    old_topic = self.topic_assign[m][n]
+                    self.count_doc_topic[m][old_topic] -= 1
+                    self.word_sum_topic[old_topic] -= 1
+                    self.count_term_topic[document[m][n]][old_topic] -= 1
 
                     #perform full conditional inference
                     new_topic = sample_full_conditional(m,n)
-                    topic_assign[m][n] = new_topic
+                    self.topic_assign[m][n] = new_topic
 
-                    count_doc_topic[m][new_topic] += 1
-                    word_sum_topic[new_topic] += 1
-                    count_term_topic[document[m][n]][new_topic] += 1
+                    self.count_doc_topic[m][new_topic] += 1
+                    self.word_sum_topic[new_topic] += 1
+                    self.count_term_topic[document[m][n]][new_topic] += 1
             
             #TODO: if converged and L sampling iterations since last read out then read out parameters        
     #end of gibbs_sampling
 
-    def initialize_state(self):
+    def initialize_state(self, K):
         """ Initialisation: assignment topics to words, increment counts
            
+        Args:
+            K: number of topics
         """
-        for m in range(len(topic_assign)):  #for each document
-            for n in range(len(topic_assign[m])):  #for each word
+
+        
+        for m in range(len(self.documents)):  #for each document
+            self.topic_assign.append([])
+            for n in range(len(self.documents[m])):  #for each word
                 # sample topic for the current word
-                topic = numpy.random.multinomial(100,[1/K.]*K).argmax()
-                topic_assign[m][n] = topic
+                topic = numpy.random.multinomial(100,[1/self.K]*self.K).argmax()
+                self.topic_assign[m].append(topic)
                 #increment counts
-                count_doc_topic[m][topic] += 1
-	        word_sum_topic[topic] += 1
-                count_term_topic[document[m][n]][topic] += 1	
+                self.count_doc_topic[m][topic] += 1
+	        self.word_sum_topic[topic] += 1
+                self.count_term_topic[document[m][n]][topic] += 1	
 
     #end of initialize_state
  
-    def sample_full_conditional(m, n)
+    def sample_full_conditional(m, n):
         """calculate the full conditional distribution for a word token with index i=(m,n)
 
         Args:
@@ -110,24 +117,42 @@ class LdaGibbsSampler:
 
         Refer to formula (78) in paper
         """
-        pseudo_prob_topic_dist = (count_term_topic[:, documents[m][n]] + 
-
+        #pseudo_prob_topic_dist = (count_term_topic[:, documents[m][n]] + self.beta) / (word_sum_topic + self.beta) * (count_doc_topic[:, m] + self.alpha)
+     
+        #idoit's version
+        pseudo_prob_topic_dist = []
+        for k in range(self.K):
+            prob = (self.count_term_topic[documents[m][n]][k] + self.beta) * (self.count_doc_topic[m][k] + self.alpha) / (self.word_sum_topic[k] + self.beta)
+            pseudo_prob_topic_dist.append(prob)
+        #end for
         
+        #multinomial sample a new topic for word[m][n]
+        new_topic = np.random.multinomial(1, pseudo_prob_topic_dist).argmax()
+        return new_topic
 
     #end of sample_full_conditional
 
-    def get_theta   
+    def get_theta(self):   
         """calculated theta based on document_topic and alpha
         refer to formula (82)
         """
     #end of get_theta
 
-    def get_phi
+    def get_phi(self):
         """calculated phi based on word_topic and beta
         refer to formula (81)
         """        
     #end of get_phi
 
-    
 
 #end of LdaGibbsSampler class
+ 
+def main():
+    documents = [[1,2,3,4,5,1],[5,4,5,6,5],[1,4,2,1,1]]  #pseudo document should call vocab instead
+    lda = LdaGibbsSampler(documents, 6)
+    lda.initialize_state(10)
+    lda.configure(500)  #500 iterations
+#end of main 
+
+if __name__ == '__main__':
+    main()
