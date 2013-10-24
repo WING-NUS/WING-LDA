@@ -101,22 +101,36 @@ class LDA:
             # for all words n \in [1,N_m] in document m do
             for n, word in enumerate(self.docs[m]):
                 # // for the current assignment of k to a term t for word w_m_n
-                z = self.z_m_n[m][n]
+                z = self.z_m_n[m][n] # current z
                 print ("topic for word n :", n, "\"", word, "\" is z = ", z)
-                # decrement counts and sums:
-                self.sum_m_z[m][z] -= 1
-                self.sum_m[m] -= 1
-                self.sum_z_t[z][word] -= 1
-                self.sum_z[z] -= 1
-                # // multinomial sampling acc. to Eq. 78 (decrements from previous step):
-                # sample topic index k from p (z_i|z_not_i, w)
 
+                # decrement counts and sums: 
+                self.sum_m_z[m][z] -= 1 # document-topic count
+                self.sum_m[m] -= 1      # document-topic sum
+                self.sum_z_t[z][word] -= 1 # topic-term count
+                self.sum_z[z] -= 1         # topic-term sum
+
+                ## // multinomial sampling acc. to Eq. 78 (decrements from previous step):
+
+                # sample topic index k from p (z_i|z_not_i, w) Eqs. 74-8  in Heinrich TR
+                # print (self.sum_z_t[:, word]) # 2nd d slice of orig 2D array [KxV] = 1D [K]
+                # print (self.sum_m_z[m]) # row vector of orig 2D [MxK] = 1D [K]
+                # print (self.sum_z) # 1D size [K]
+                p_z = self.sum_z_t[:, word] * self.sum_m_z[m] / self.sum_z
+                print (p_z)
+                normalized_p_z = p_z / p_z.sum()
+                print (normalized_p_z)
+                print (numpy.random.multinomial(1, normalized_p_z))
+
+                print (p_z)
                 # // for the new assignment of z_m_n to the term t for word w_m_n:
+#                self.z_m_n[m][n] = new_z
+
                 # increment counts and sums:
-                self.sum_m_z[m][z] += 1
-                self.sum_m[m] += 1
-                self.sum_z_t[z,word] += 1
-                self.sum_z[z] += 1
+                self.sum_m_z[m][z] += 1 # document-topic count
+                self.sum_m[m] += 1      # document topic sum
+                self.sum_z_t[z,word] += 1 # topic-term count
+                self.sum_z[z] += 1        # topic-term sum
             # end for all words 
         # end for all documents
         # end of method inference
