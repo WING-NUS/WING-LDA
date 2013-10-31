@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import numpy
+import vocabulary
 
 class LDA:
     """Latent Dirichlet Allocation Topic Modelling library
@@ -128,12 +129,12 @@ class LDA:
         # end for all documents
         # end of method inference
 
-    def output_word_topic_dist(self):
+    def output_word_topic_dist(self, voca):
         phi = self.sum_z_t / self.sum_z[:,numpy.newaxis] # normalize counts to probabilities
         for z in range(self.K):
             print "\n-- topic: %d" % z
             for t in numpy.argsort(-1 * phi[z]): # -1 for reverse sort
-                print " %s: %f" % (t, phi[z,t])
+                print " %s: %f" % (voca[t], phi[z,t])
         # End of output_word_topic_dist
 
     def perplexity():
