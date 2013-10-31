@@ -1,0 +1,13 @@
+Version .01
+- Initial version
+- With test.txt File
+
+Version .02
+- Inference work (but no hyperparameters)
+- Vocabulary file working
+
+Version .1
+- with changable alpha, beta, K, vocabulary
+
+Version .2 
+- with unit test cases
