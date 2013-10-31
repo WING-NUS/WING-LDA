@@ -26,12 +26,6 @@ class LDA:
     Returns:
             Topic associations \z; multinominal parameters \Phi and \Theta; hyperparameter estimates \alpha, \beta
 
-    1) Create a LDA, call LDA.init
-    Necessary!
-
-    2) Do inference per round, call LDA.inference 
-    Necessary!
-
     3) Calculate perplexity, call LDA.perplexity
     Optional - v2
     """
@@ -74,11 +68,11 @@ class LDA:
         # end for all documents m
 
         # TODO:to be deleted later
-        print "Corpus has length ", self.word_count
-        for i in range(self.K):
-            print "Topic", i, self.sum_z[i]
-        for i in range(len(self.docs)):
-            print "Doc", i, self.sum_m[i], self.sum_m_z[i]
+        # print "Corpus has length ", self.word_count
+        # for i in range(self.K):
+        #    print "Topic", i, self.sum_z[i]
+        # for i in range(len(self.docs)):
+        #    print "Doc", i, self.sum_m[i], self.sum_m_z[i]
         # end of method __init 
 
     def inference(self):
