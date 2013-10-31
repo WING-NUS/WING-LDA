@@ -14,18 +14,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import numpy
+import vocabulary
+
 def main():
     """Main function for command line invocation
     """
     import lda
 
-    docs = [[1,2,3],[2,3,4],[1,2,4],[5,2,3],[1,4,5],  \
-            [5,6,7],[8,9,0],[5,7,0],[0,9,8],[7,8,0]]
-    
-    v = 10                      # 10 vocabulary items
+    FILE_LOCATION = "test2.txt"
+    vocab = vocabulary.Vocabulary()
+    docs = vocab.loadfile(FILE_LOCATION)
+    docs = vocab.process_docs()
 
-    lda = lda.LDA(docs,v)
-    lda.inference()
+    # set the random seed for replicability
+    numpy.random.seed(1)
+
+    iterations = 100
+
+    lda = lda.LDA(docs, vocab.get_vocab_size())
+    for i in range(iterations):
+        lda.inference()
+        print "Iteration %s:" % i
+    lda.output_word_topic_dist(vocab)
 # end main()
 
 # execute class if called from command-line

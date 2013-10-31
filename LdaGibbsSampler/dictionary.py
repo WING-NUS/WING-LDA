@@ -1,7 +1,7 @@
 '''
 Created on Oct 9, 2013
 
-@author: taochen
+@author: taochen, yiping
 '''
 
 class Dictionary:
@@ -15,7 +15,6 @@ class Dictionary:
     '''
 
     def __init__(self):
-        self.docs = dict()
         self.id_word = dict()
         self.word_id = dict()
     
@@ -26,7 +25,20 @@ class Dictionary:
         Returns:
             self.docs.
         """
-        
+        f = open(file_path, "r")
+        sentences = f.readlines()
+ 
+        word_count = 0
+
+        for sentence in sentence:  
+            for word in sentence.strip().split(" "):
+                if not (word in self.word_id):  #word not in dictionary
+                    word_id[word] = word_count
+                    word_count += 1
+
+        #self.doc = [[self.word_id[word] for word in sentence.strip().split(" ")] for sentence in sentences]
+
+    '''
     def process_word(self, word):
         """Stem word and filter out non-meaningful word (e.g., stop words).
         Consider use: https://pypi.python.org/pypi/stemming/1.0 or
@@ -48,6 +60,5 @@ class Dictionary:
         """Return the word of the query id."""
         
     def doc_to_ids(self, doc):
-        
-        
-        
+    '''    
+#end of class dictionary           

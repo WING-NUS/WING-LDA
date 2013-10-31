@@ -1,0 +1,15 @@
+t1w1 t1w1 t1w1 t1w1
+
+t1w1 t1w1 t1w1 t1w1
+
+t1w1 t1w1 t1w1 t1w1 
+
+t2w1 t2w1 t2w2 t2w2
+
+t2w1 t2w1 t2w2 t2w1
+
+t2w1 t2w1 t2w2 t2w2
+
+t2w1 t2w2 t2w2 t2w2
+
+t2w1 t2w1 t2w1 t2w1
