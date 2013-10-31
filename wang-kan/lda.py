@@ -40,7 +40,7 @@ class LDA:
         
         # zero all count variables: sum_m_k, sum_m, sum_k_t, sum_k
         self.sum_m_z = numpy.zeros((len(docs),self.K)) # document-topic count sum_m_k (dim MxK)
-        self.sum_m   = numpy.zeros(len(docs)) # document-topic sum sum_m (dim M)
+        # self.sum_m   = numpy.zeros(len(docs)) # document-topic sum sum_m (dim M), not actually used
         self.sum_z_t = numpy.zeros((self.K,V)) # topic-term count sum_z_t (dim KxV)
         self.sum_z   = numpy.zeros(self.K) # topic-term sum sum_z (dim K)
         self.word_count = 0
@@ -59,12 +59,18 @@ class LDA:
                 print "  Word", n, ":", word, "; assigned to topic=", z
                 
                 self.sum_m_z[m,z] += 1 # increment document-topic count sum_m_z += 1
-                self.sum_m[m] += 1 # increment document-topic sum sum_m += 1
+                # self.sum_m[m] += 1 # increment document-topic sum sum_m += 1, not used
                 self.sum_z_t[z,word] += 1 # increment topic-term count sum_z_t += 1
                 self.sum_z[z] += 1 # increment topic-term sum sum_z += 1
             # end for all words n
             self.word_count += len(doc)
             self.z_m_n.append(z_n)
+
+        self.sum_m_z += self.alpha # add \alpha to each element of document-topic matrix to smooth counts
+        # self.sum_m += self.alpha * self.K # add \alpha to document-topic sum, not used
+        self.sum_z_t += self.beta # add \beta to each element of topic-term matrix to smooth counts
+        self.sum_z += self.beta * V # add \alpha to document-topic sum, not used
+
         # end for all documents m
 
         # TODO:to be deleted later
