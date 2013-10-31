@@ -10,6 +10,8 @@ def main():
         print(vocab.vocabulary)
         print(vocab.word_id_dict)
         print(vocab.get_vocab_size())
+        print(vocab[0])
+        print(vocab.vocabulary[0])
 
 
 # End of main().

@@ -33,6 +33,10 @@ class Vocabulary:
                 doc += line
         # end for
         f.close()
+        if doc:
+            self.docs.append(doc.strip().split())
+            doc = ""
+        # end if
         return self.docs
 
     # end of loadfile
