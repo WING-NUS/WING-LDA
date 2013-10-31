@@ -19,13 +19,23 @@ def main():
     """
     import lda
 
-    docs = [[1,2,3],[2,3,4],[1,2,4],[5,2,3],[1,4,5],  \
-            [5,6,7],[8,9,0],[5,7,0],[0,9,8],[7,8,0]]
-    
-    v = 10                      # 10 vocabulary items
+#    docs = [[1,2,3],[2,3,4],[1,2,4],[4,2,3],[1,4,4],  \
+#            [6,6,7],[8,9,0],[5,7,5],[0,9,8],[7,8,0]]
+#    v = 10                      # 10 vocabulary items
+    docs = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[1,1,2,2],[1,1,2,1],[1,1,2,2],[1,2,2,2],[1,1,1,1]]
+    v = 3
+
+    # set the random seed for replicability
+    numpy.random.seed(3)
+
+    iterations = 100
 
     lda = lda.LDA(docs,v)
-    lda.inference()
+    for i in range(iterations):
+        lda.inference()
+        print "Iteration %s:" % i
+    lda.output_word_topic_dist()
+
 # end main()
 
 # execute class if called from command-line
