@@ -34,7 +34,6 @@ class LDA:
     3) Calculate perplexity, call LDA.perplexity
     Optional - v2
     """
-    
     def __init__(self, docs, V):
         self.K = 2             # number of topics
         self.alpha = 0.01    # topic prior (used to influence \Theta) 
@@ -58,7 +57,7 @@ class LDA:
 
         for m, doc in enumerate(docs): 
             # for all documents m \in [1,M] do
-            print ("Doc", m)
+            print "Doc", m
             z_n = numpy.zeros(len(doc), dtype=numpy.int8) # (empty) topic assignments for doc m (use integers, not floats)
             for n, word in enumerate(doc):
                 # for all words n \in [1,n_m] in doc_m do
@@ -66,7 +65,7 @@ class LDA:
                 z = numpy.random.randint(0, self.K) # choose a topic for each word
                 z_n[n] = z
 
-                print ("  Word", n, ":", word, "; assigned to topic=", z)
+                print "  Word", n, ":", word, "; assigned to topic=", z
                 
                 self.sum_m_z[m,z] += 1 # increment document-topic count sum_m_z += 1
                 self.sum_m[m] += 1 # increment document-topic sum sum_m += 1
@@ -78,11 +77,11 @@ class LDA:
         # end for all documents m
 
         # TODO:to be deleted later
-        print ("Corpus has length ", self.word_count)
+        print "Corpus has length ", self.word_count
         for i in range(self.K):
-            print ("Topic", i, self.sum_z[i])
+            print "Topic", i, self.sum_z[i]
         for i in range(len(self.docs)):
-            print ("Doc", i, self.sum_m[i], self.sum_m_z[i])
+            print "Doc", i, self.sum_m[i], self.sum_m_z[i]
         # end of method __init 
 
     def inference(self):
@@ -97,18 +96,18 @@ class LDA:
         print ("Inference:")
         # for all documents m \in [1,M] do
         for m in range(len(self.docs)):
-            print (" m: ", m)
             # for all words n \in [1,N_m] in document m do
             for n, word in enumerate(self.docs[m]):
                 # // for the current assignment of k to a term t for word w_m_n
                 z = self.z_m_n[m][n] # current z
-                print ("topic for word n :", n, "\"", word, "\" is z = ", z)
+                print "Topic for word %s (%s in doc %s) is z = %s " % (word, n, m, z)
 
                 # decrement counts and sums: 
                 self.sum_m_z[m][z] -= 1 # document-topic count
-                self.sum_m[m] -= 1      # document-topic sum
+                # self.sum_m[m] -= 1      # document-topic sum, not needed
                 self.sum_z_t[z][word] -= 1 # topic-term count
                 self.sum_z[z] -= 1         # topic-term sum
+                ## BUG: can result in some 0 counts where the normalization of P_z later is NaN (undefined)
 
                 ## // multinomial sampling acc. to Eq. 78 (decrements from previous step):
 
@@ -117,23 +116,27 @@ class LDA:
                 # print (self.sum_m_z[m]) # row vector of orig 2D [MxK] = 1D [K]
                 # print (self.sum_z) # 1D size [K]
                 p_z = self.sum_z_t[:, word] * self.sum_m_z[m] / self.sum_z
-                print (p_z)
                 normalized_p_z = p_z / p_z.sum()
-                print (normalized_p_z)
-                print (numpy.random.multinomial(1, normalized_p_z))
-
-                print (p_z)
+                draw = numpy.random.multinomial(1, normalized_p_z)
+                new_z = draw.argmax()
                 # // for the new assignment of z_m_n to the term t for word w_m_n:
-#                self.z_m_n[m][n] = new_z
+                self.z_m_n[m][n] = new_z
+                print "P_z (Normalized):", p_z, "(", normalized_p_z, ") // Draw: ", draw, " // z : ", z, "=>", new_z
 
                 # increment counts and sums:
-                self.sum_m_z[m][z] += 1 # document-topic count
-                self.sum_m[m] += 1      # document topic sum
-                self.sum_z_t[z,word] += 1 # topic-term count
-                self.sum_z[z] += 1        # topic-term sum
+                self.sum_m_z[m][new_z] += 1 # document-topic count
+                # self.sum_m[m] += 1      # document topic sum, not needed
+                self.sum_z_t[new_z,word] += 1 # topic-term count
+                self.sum_z[new_z] += 1        # topic-term sum
             # end for all words 
         # end for all documents
         # end of method inference
+
+    def output_word_topic_dist(self, V):
+        for z in range(self.K):
+            print "Topic %s: " % z
+            for t in range(V):
+                print " Term %s: %d" % (t, self.sum_z_t[z,t])
 
     def perplexity():
         1                       # placeholder

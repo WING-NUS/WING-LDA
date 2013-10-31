@@ -24,8 +24,14 @@ def main():
     
     v = 10                      # 10 vocabulary items
 
+    iterations = 100
+
     lda = lda.LDA(docs,v)
-    lda.inference()
+    for i in range(iterations):
+        lda.inference()
+        print "Iteration %s:" % i
+        lda.output_word_topic_dist(v)
+
 # end main()
 
 # execute class if called from command-line
