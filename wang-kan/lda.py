@@ -39,7 +39,6 @@ class LDA:
         self.alpha = 0.01    # topic prior (used to influence \Theta) 
         self.beta = 0.01        # word prior (used to influence \Phi)
         self.docs = docs
-        self.seed = 1
 
         # topic assignments for words in documents
         self.z_m_n = list()     # to be populated by inner loop
@@ -51,9 +50,6 @@ class LDA:
         self.sum_z   = numpy.zeros(self.K) # topic-term sum sum_z (dim K)
         self.word_count = 0
         # TODO: use the hyperparameters
-
-        # set the random seed for replicability
-        numpy.random.seed(self.seed)
 
         for m, doc in enumerate(docs): 
             # for all documents m \in [1,M] do
@@ -132,11 +128,13 @@ class LDA:
         # end for all documents
         # end of method inference
 
-    def output_word_topic_dist(self, V):
+    def output_word_topic_dist(self):
+        phi = self.sum_z_t / self.sum_z[:,numpy.newaxis] # normalize counts to probabilities
         for z in range(self.K):
-            print "Topic %s: " % z
-            for t in range(V):
-                print " Term %s: %d" % (t, self.sum_z_t[z,t])
+            print "\n-- topic: %d" % z
+            for t in numpy.argsort(-1 * phi[z]): # -1 for reverse sort
+                print " %s: %f" % (t, phi[z,t])
+        # End of output_word_topic_dist
 
     def perplexity():
         1                       # placeholder
