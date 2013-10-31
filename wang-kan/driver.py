@@ -21,20 +21,13 @@ def main():
     """
     import lda
 
-#    docs = [[1,2,3],[2,3,4],[1,2,4],[4,2,3],[1,4,4],  \
-#            [6,6,7],[8,9,0],[5,7,5],[0,9,8],[7,8,0]]
-#    v = 10                      # 10 vocabulary items
-
     FILE_LOCATION = "test2.txt"
     vocab = vocabulary.Vocabulary()
     docs = vocab.loadfile(FILE_LOCATION)
     docs = vocab.process_docs()
 
     # set the random seed for replicability
-    print docs
-    print vocab.docs
-    print docs_2
-    numpy.random.seed(3)
+    numpy.random.seed(1)
 
     iterations = 100
 
