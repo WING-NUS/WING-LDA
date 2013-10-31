@@ -44,16 +44,23 @@ class LDA:
         self.docs = docs
         self.M = len(self.docs)
 
+        # m -> variable for observed documents
+        # k -> counter variable for topics
+        # t -> variable for observed terms
+        # z -> latent topic assignment
+
         # Topics of words of documents.
         self.z_m_n = list()
         # Word count of each document and topic.
-        self.n_m_k = numpy.zeros(self.M, self.K)
+        self.n_m_k = numpy.zeros((self.M, self.K))
         # Word count of each document
         self.n_m = numpy.zeros(self.M)
         # Word count of each topic and vocabulary.
         self.n_k_t = numpy.zeros((self.K, V))
         # Word count of each topic.
         self.n_k = numpy.zeros(self.K)
+        # Word count for each document and word in vocab
+        self.n_m_t = numpy.zeros((self.K, V))
 
         for m, doc in enumerate(docs):
             # Word count for the current document
@@ -71,6 +78,8 @@ class LDA:
                 self.n_k_t[z, word] += 1
                 # increment topic-term sum sum_z += 1
                 self.n_k[z] += 1
+                # increment term-doc count
+                self.n_m_t[m, word] += 1
             self.z_m_n.append(z_n)
 
     def inference(self):
@@ -107,7 +116,23 @@ class LDA:
                 self.n_k[new_z] += 1
 
     def perplexity(self):
-        1                       # placeholder
-        # end of method perplexity
+        phi = numpy.zeros((self.K, self.V))
+        nu = numpy.zeros((self.M, self.K))
+        # Calculating phi values for each topic over all words in vocab
+        for k in range(self.K):
+            phi[k] = (self.n_k_t[k, :] + self.beta) / (self.n_k + self.beta)
+        # Calculating theta values for each doc over all topics
+        for m, doc in enumerate(self.docs):
+            nu[m] = (self.n_m_k[m, :] + self.alpha) / (self.n_m_k.sum(1) +
+                                                       self.alpha)
 
-# end of class LDA
+        # Calculating Eq. 96
+        log_pwM = numpy.zeros(self.M)
+        for m in range(self.M):
+            for t in range(self.V):
+                phi_nu = (phi[:, t] * nu[m]).sum()
+                log_pwM[m] += self.n_m_t[m, t] * numpy.log(phi_nu)
+
+        # Calculation of perplexity as per Eq. 94
+        P_W_M = numpy.exp(-1 * log_pwM.sum() / self.n_m.sum())
+        return P_W_M

@@ -19,9 +19,15 @@ def main():
     """
     import lda
 
-    docs = [[1,2,3],[2,3,4],[1,2,4],[5,2,3],[1,4,5],  \
-            [5,6,7],[8,9,10],[5,7,10],[10,9,8],[7,8,10]]
-    
+    # Assuming that there are 3 topics in the corpus and following are the
+    # distributions of terms in those topics:
+    # Topic 1 : { 1, 4, 5, 7 }
+    # Topic 2 : { 2, 6, 9 }
+    # Topic 3 : { 3, 8, 0 }
+
+    docs = [[1,2,4],[2,3,6],[1,8,0],[5,2,9],[0,8,5],  \
+            [5,6,7],[8,9,0],[4,7,0],[0,3,2],[7,8,1],  \
+            [1,5,2],[4,5,9],[6,9,0],[3,8,7],]
     v = 10                      # 10 vocabulary items
 
     lda = lda.LDA(docs,v)
