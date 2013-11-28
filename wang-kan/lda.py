@@ -70,12 +70,12 @@ class LDA:
                 # TODO: Smart Init: sample topic index z_m_n = K from Multinomial(1/K)
                 
                 p_z = self.sum_z_t[:, word] * self.sum_m_z[m] / self.sum_z
-                print "P_z:", p_z
+#                print "P_z:", p_z
                 z = numpy.random.multinomial(1, p_z / p_z.sum()).argmax()
 #                z = numpy.random.randint(0, self.K) # choose a topic for each word
                 z_n[n] = z
 
-                print "  Word", n, ":", word, "; assigned to topic=", z
+#                print "  Word", n, ":", word, "; assigned to topic=", z
                 
                 self.sum_m_z[m,z] += 1 # increment document-topic count sum_m_z += 1
                 # self.sum_m[m] += 1 # increment document-topic sum sum_m += 1, not used
@@ -143,12 +143,16 @@ class LDA:
         # end for all documents
         # end of method inference
 
-    def output_word_topic_dist(self, voca):
+    def output_word_topic_dist(self, voca, top=20):
         phi = self.sum_z_t / self.sum_z[:,numpy.newaxis] # normalize counts to probabilities
         for z in range(self.K):
             print "\n-- topic: %d" % z
+            limit = 0
             for t in numpy.argsort(-1 * phi[z]): # -1 for reverse sort
+                if limit > top:
+                    break
                 print " %s: %f" % (voca[t], phi[z,t])
+                limit += 1
         # End of output_word_topic_dist
 
     def perplexity(self):

@@ -15,15 +15,15 @@ limitations under the License.
 """
 import numpy
 import vocabulary
+import sys
 
 def main():
     """Main function for command line invocation
     """
     import lda
 
-    FILE_LOCATION = "test2.txt"
     vocab = vocabulary.Vocabulary()
-    docs = vocab.loadfile(FILE_LOCATION)
+    docs = vocab.loadfile(sys.argv[1])
     docs = vocab.process_docs()
 
     # set the random seed for replicability
