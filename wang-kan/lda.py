@@ -19,20 +19,30 @@ import vocabulary
 class LDA:
     """Latent Dirichlet Allocation Topic Modelling library
 
-    Args:
-            Word vectors \w;
-        TODO - hyperparameters \alpha, \beta; topic number 
+    Parameters
+    ----------
+            docs: vocabulary data structure
+            	encodes the documents and their tokens
+            V: integer
+            	total unique vocabulary size
+            alpha: float [0,1]
+            	alpha hyperparameter
+            beta: float [0,1]
+            	beta hyperparameter
+            K: integer
+            	number of topics
 
-    Returns:
+    Returns
+    -------
             Topic associations \z; multinominal parameters \Phi and \Theta; hyperparameter estimates \alpha, \beta
 
     3) Calculate perplexity, call LDA.perplexity
     Optional - v2
     """
-    def __init__(self, docs, V):
-        self.K = 2             # number of topics
-        self.alpha = 0.01    # topic prior (used to influence \Theta) 
-        self.beta = 0.01        # word prior (used to influence \Phi)
+    def __init__(self, docs, V, alpha = 0.01, beta = 0.01, K = 2):
+        self.K = K             # number of topics
+        self.alpha = alpha   # topic prior (used to influence \Theta) 
+        self.beta = beta        # word prior (used to influence \Phi)
         self.docs = docs
 
         # topic assignments for words in documents
@@ -46,6 +56,11 @@ class LDA:
         self.word_count = 0
         # TODO: use the hyperparameters
 
+        self.sum_m_z += self.alpha # add \alpha to each element of document-topic matrix to smooth counts
+        # self.sum_m += self.alpha * self.K # add \alpha to document-topic sum, not used
+        self.sum_z_t += self.beta # add \beta to each element of topic-term matrix to smooth counts
+        self.sum_z += self.beta * V # add \alpha to document-topic sum, not used
+
         for m, doc in enumerate(docs): 
             # for all documents m \in [1,M] do
             print "Doc", m
@@ -53,7 +68,11 @@ class LDA:
             for n, word in enumerate(doc):
                 # for all words n \in [1,n_m] in doc_m do
                 # TODO: Smart Init: sample topic index z_m_n = K from Multinomial(1/K)
-                z = numpy.random.randint(0, self.K) # choose a topic for each word
+                
+                p_z = self.sum_z_t[:, word] * self.sum_m_z[m] / self.sum_z
+                print "P_z:", p_z
+                z = numpy.random.multinomial(1, p_z / p_z.sum()).argmax()
+#                z = numpy.random.randint(0, self.K) # choose a topic for each word
                 z_n[n] = z
 
                 print "  Word", n, ":", word, "; assigned to topic=", z
@@ -65,11 +84,6 @@ class LDA:
             # end for all words n
             self.word_count += len(doc)
             self.z_m_n.append(z_n)
-
-        self.sum_m_z += self.alpha # add \alpha to each element of document-topic matrix to smooth counts
-        # self.sum_m += self.alpha * self.K # add \alpha to document-topic sum, not used
-        self.sum_z_t += self.beta # add \beta to each element of topic-term matrix to smooth counts
-        self.sum_z += self.beta * V # add \alpha to document-topic sum, not used
 
         # end for all documents m
 
