@@ -104,14 +104,14 @@ class LDA:
         (e.g., perplexity)
         """
 
-        print ("Inference:")
+#        print ("Inference:")
         # for all documents m \in [1,M] do
         for m in range(len(self.docs)):
             # for all words n \in [1,N_m] in document m do
             for n, word in enumerate(self.docs[m]):
                 # // for the current assignment of k to a term t for word w_m_n
                 z = self.z_m_n[m][n] # current z
-                print "Topic for word %s (%s in doc %s) is z = %s " % (word, n, m, z)
+#                print "Topic for word %s (%s in doc %s) is z = %s " % (word, n, m, z)
 
                 # decrement counts and sums: 
                 self.sum_m_z[m][z] -= 1 # document-topic count
@@ -132,7 +132,7 @@ class LDA:
                 new_z = draw.argmax()
                 # // for the new assignment of z_m_n to the term t for word w_m_n:
                 self.z_m_n[m][n] = new_z
-                print "P_z (Normalized):", p_z, "(", normalized_p_z, ") // Draw: ", draw, " // z : ", z, "=>", new_z
+#                print "P_z (Normalized):", p_z, "(", normalized_p_z, ") // Draw: ", draw, " // z : ", z, "=>", new_z
 
                 # increment counts and sums:
                 self.sum_m_z[m][new_z] += 1 # document-topic count
@@ -151,8 +151,28 @@ class LDA:
                 print " %s: %f" % (voca[t], phi[z,t])
         # End of output_word_topic_dist
 
-    def perplexity():
-        1                       # placeholder
+    def perplexity(self):
+        # Eq. 96 in Heinrich (pg 29)
+        # log perplexity (w_m|model) = \Sum_over_all_words log \Sum \phi_k_t x \theta_m_k
+        phi = self.sum_z_t / self.sum_z[:,numpy.newaxis] # normalize counts to probabilities, dim KxV
+        log_perplexity = 0.0
+        
+        Kalpha = self.K * self.alpha
+
+        # loop over all words and accumulate
+        for m, doc in enumerate(self.docs): 
+            # for all documents m \in [1,M] do
+            # print "Doc", m
+            # Eq. 86 in Heinrich (pg 26)
+            theta = self.sum_m_z[m] / (len(self.docs[m]) + Kalpha) # dim MxK 
+            for n, word in enumerate(doc):
+                log_perplexity += numpy.log(numpy.inner(phi[:,word],theta)) # scalar
+
+        log_perplexity /= self.word_count
+        print log_perplexity
+        log_perplexity = numpy.exp(-log_perplexity);
+        print log_perplexity
+        return log_perplexity
         # end of method perplexity
 
 # end of class LDA

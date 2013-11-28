@@ -27,15 +27,16 @@ def main():
     docs = vocab.process_docs()
 
     # set the random seed for replicability
-    numpy.random.seed(1)
+    numpy.random.seed(3)
 
     iterations = 100
 
     lda = lda.LDA(docs, vocab.get_vocab_size())
     for i in range(iterations):
         lda.inference()
+        lda.output_word_topic_dist(vocab)
+        lda.perplexity()
         print "Iteration %s:" % i
-    lda.output_word_topic_dist(vocab)
 # end main()
 
 # execute class if called from command-line
